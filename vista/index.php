@@ -8,6 +8,11 @@ if (isset($_COOKIE["loginusuario"])) {
 require_once '../util/funciones/definiciones.php';
 
 require_once '../negocio/sesion.clase.php';
+
+//session_name("intentos_name");
+//session_start();
+//$_SESSION['intentos'] = $_SESSION['intentos']+1;
+
 ?>
 
 <!DOCTYPE html>
@@ -36,11 +41,11 @@ require_once '../negocio/sesion.clase.php';
 
             <div class = "row">
                 <div class = "col-xs-3">
-                    <div class="login-box-image">
-                        <img src="../imagenes/logo2.jpg" style="width: 100%; height: 260px"/>
+                    <div class="">
+                        <img src="../imagenes/logo2.jpg" style="width:210%; height: 338px"/>
                     </div>
                 </div>
-                <div class = "col-xs-1">
+                <div class = "col-xs-2">
                 </div>
                 <div class = "col-xs-4">
                     <div class="login-box-body">
@@ -48,33 +53,39 @@ require_once '../negocio/sesion.clase.php';
                             Ingrese sus datos para iniciar sesión</p>
 
                         <form action="../controlador/sesion.iniciar.controlador.php" method="post">
+                            <div class="form-group">
+                                <select class="form-control" id="cbotipo" name="cbotipo" required="" >
+                                    <option value="" disabled selected>Seleccione un tipo</option>
+                                    <option value="1" >Cliente</option>
+                                    <option value="2" >Personal</option>
+                                </select>
+                            </div>
+                            
                             <div class="form-group has-feedback">
                                 <input type="email" class="form-control" placeholder="Usuario" autofocus="" name="txtusuario" required="" value="<?php echo $loginUsuario; ?>" />
-                                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                <span class="glyphicon glyphicon-user form-control-feedback text-blue"></span>
                             </div>
 
                             <div class="form-group has-feedback">
                                 <input type="password" class="form-control" placeholder="Contraseña" name="txtclave"/>
-                                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                <span class="glyphicon glyphicon-lock form-control-feedback text-yellow"></span>
                             </div>
 
                             <!--codigo captcha-->
-                            <div  class = "row" >
+                            <div  class = "row" id="frmcaptcha" >
                                 <div  class = "col-xs-6" >
                                     <div class="form-group has-feedback">
-                                        <button type="button" class="form-control alert-info" id="btncaptcha" onclick='window.location.reload()'>
-                                            <?php
-                                            $objSesion = new Sesion();                                            
-                                            echo $objSesion->captcha();
-                                            ?>
-                                            <span class="glyphicon glyphicon-refresh form-control-feedback"></span>
+                                        <button type="button" class="form-control alert-info" id="btncaptcha" name="btncaptcha">                                            
+                                        <!--  Captcha -->                                      
+                                            
                                         </button>
+                                        <span class="glyphicon glyphicon-refresh form-control-feedback text-bold"></span>
                                     </div>
                                 </div>
                                 <div  class = "col-xs-6" >
-                                    <div class="form-group has-feedback">
-                                        <input type="text" class="form-control" placeholder="Código Captcha" name="txtcaptcha"/>
-                                        <span class="glyphicon glyphicon-alert form-control-feedback"></span>
+                                    <div class="form-group has-feedback" >
+                                        <input type="text" class="form-control" placeholder="Código Captcha" name="txtcaptcha" >
+                                        <span class="glyphicon glyphicon-alert form-control-feedback text-red"></span>
                                     </div>
                                 </div>
                             </div>
@@ -98,10 +109,12 @@ require_once '../negocio/sesion.clase.php';
                                 </div><!-- /.col -->
                                 <div class="col-xs-4">
                                     <button type="submit" class="btn btn-success btn-block btn-flat">Ingresar</button>
+                                    
                                 </div><!-- /.col -->
                             </div>
                         </form>
-                        <a href="#">Recuperar Contraseña</a><br>
+                        <a href="crear.cuenta.vista.php">Crear Cuenta</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <a href="recuperar.contrasena.vista.php">Recuperar Contraseña</a><br>
                     </div><!-- /.login-box-body -->
                 </div>
             </div>
@@ -118,6 +131,8 @@ require_once '../negocio/sesion.clase.php';
         <script src="../util/bootstrap/js/bootstrap.js" type="text/javascript"></script>
         <!-- iCheck -->
         <script src="../util/lte/plugins/iCheck/icheck.js" type="text/javascript"></script>
+        <!--Captcha-->
+        <script src="../vista/js/captcha.js" type="text/javascript"></script>
         <script>
                                             $(function () {
                                                 $('input').iCheck({

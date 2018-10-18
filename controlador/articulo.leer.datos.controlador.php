@@ -14,8 +14,9 @@ try {
     $resultado = $objArti->leerDatos($codigoArticulo);
     
     Funciones::imprimeJSON(200, "", $resultado);
+    
 } catch (Exception $exc) {
-    Funciones::imprimeJSON(500 ,$exc->getMessage(),"");
+    Funciones::imprimeJSON(500, $exc->getMessage(), "");
 }
 
 

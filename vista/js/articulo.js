@@ -1,14 +1,31 @@
-$(document).ready(function () {
+$(document).ready(function () {   
+    /*
+    //select2
+    $("#cbolinea").select2();   
+    $("#cbolineamodal").select2();
+    $("#cbomarca").select2();
+    $("#cbomarcamodal").select2();
+    */
+   
     cargarComboLinea("#cbolinea", "todos");
     cargarComboLinea("#cbolineamodal", "seleccione");
     cargarComboMarca("#cbomarca", "todos");
     cargarComboMarca("#cbomarcamodal", "seleccione");
-    listar();
+    
+    listar();    
 });
 
 $("#cbolinea").change(function () {
+    /*
+    //select2
+    $("#cbocategoria").select2({
+        placeholder: "Seleccione una categoria"
+    });  
+    */
+   
     var codigoLinea = $("#cbolinea").val();
     cargarComboCategoria("#cbocategoria", "todos", codigoLinea);
+
     listar();
 });
 
@@ -21,8 +38,13 @@ $("#cbomarca").change(function () {
 });
 
 $("#cbolineamodal").change(function () {
+    /*
+    //select2
+    $("#cbocategoriamodal").select2();
+    */
+
     var codigoLinea = $("#cbolineamodal").val();
-    cargarComboCategoria("#cbocategoriamodal", "todos", codigoLinea);
+    cargarComboCategoria("#cbocategoriamodal", "seleccione", codigoLinea);
 });
 
 function listar() {
@@ -51,10 +73,8 @@ function listar() {
                     }
             ).done(function (resultado) {
         var datosJSON = resultado;
-
         if (datosJSON.estado === 200) {
             var html = "";
-
             html += '<small>';
             html += '<table id="tabla-listado" class="table table-bordered table-striped">';
             html += '<thead>';
@@ -69,7 +89,6 @@ function listar() {
             html += '</tr>';
             html += '</thead>';
             html += '<tbody>';
-
             //Detalle
             $.each(datosJSON.datos, function (i, item) {
                 html += '<tr>';
@@ -86,19 +105,13 @@ function listar() {
                 html += '</td>';
                 html += '</tr>';
             });
-
             html += '</tbody>';
             html += '</table>';
             html += '</small>';
-
             $("#listado").html(html);
-
             $('#tabla-listado').dataTable({
                 "aaSorting": [[1, "asc"]]
             });
-
-
-
         } else {
             swal("Mensaje del sistema", resultado, "warning");
         }
@@ -107,7 +120,6 @@ function listar() {
         var datosJSON = $.parseJSON(error.responseText);
         swal("Error", datosJSON.mensaje, "error");
     });
-
 }
 
 
@@ -141,16 +153,13 @@ function eliminar(codigoArticulo) {
                         var datosJSON = $.parseJSON(error.responseText);
                         swal("Error", datosJSON.mensaje, "error");
                     });
-
                 }
             });
-
 }
 
 
 $("#frmgrabar").submit(function (evento) {
     evento.preventDefault();
-
     swal({
         title: "Confirme",
         text: "¿Esta seguro de grabar los datos ingresados?",
@@ -164,7 +173,7 @@ $("#frmgrabar").submit(function (evento) {
     },
             function (isConfirm) {
 
-                if (isConfirm) { //el usuario hizo clic en el boton SI     
+                if (isConfirm) { //el usuario hizo clic en el boton SI
 
                     //procedo a grabar
 
@@ -175,12 +184,10 @@ $("#frmgrabar").submit(function (evento) {
                             }
                     ).done(function (resultado) {
                         var datosJSON = resultado;
-
                         if (datosJSON.estado === 200) {
                             swal("Exito", datosJSON.mensaje, "success");
-
-                            $("#btncerrar").click();
-                            listar();
+                            $("#btncerrar").click(); //Cerrar la ventana
+                            listar(); //actualizar la lista
                         } else {
                             swal("Mensaje del sistema", resultado, "warning");
                         }
@@ -189,62 +196,54 @@ $("#frmgrabar").submit(function (evento) {
                         var datosJSON = $.parseJSON(error.responseText);
                         swal("Error", datosJSON.mensaje, "error");
                     });
-
                 }
             });
 });
 
-
 $("#btnagregar").click(function () {
     $("#txttipooperacion").val("agregar");
-
     $("#txtcodigo").val("");
     $("#txtnombre").val("");
     $("#txtprecio").val("");
     $("#cbolineamodal").val("");
-    $("#cbocategoriamodal").val("");
+    $("#cbocategoriamodal").empty();
     $("#cbomarcamodal").val("");
-
-    $("#titulomodal").text("Agregar Nuevo Articulo");
+    $("#titulomodal").text("Agregar nuevo articulo");
 });
-
 
 $("#myModal").on("shown.bs.modal", function () {
     $("#txtnombre").focus();
 });
 
+function leerDatos(codigoArticulo) {
 
-function leerDatos( codigoArticulo ){
-    
     $.post
-        (
-            "../controlador/articulo.leer.datos.controlador.php",
-            {
-                p_codigoArticulo: codigoArticulo
-            }
-        ).done(function(resultado){
-            var datosJSON = resultado;
-            if (datosJSON.estado === 200){
-                
-                $.each(datosJSON.datos, function(i,item) {
-                    $("#txtcodigo").val( item.codigo_articulo );
-                    $("#txtnombre").val( item.nombre );
-                    $("#txtprecio").val( item.precio_venta );
-                    
-                    $("#cbolineamodal").val( item.codigo_linea );
-                    $("#cbomarcamodal").val( item.codigo_marca );
-                    
-                    $("#cbolineamodal").change();
-                    
-                    $("#myModal").on("shown.bs.modal", function(){
-                        $("#cbocategoriamodal").val( item.codigo_categoria );
-                    });
-                    
+            (
+                    "../controlador/articulo.leer.datos.controlador.php",
+                    {
+                        p_codigoArticulo: codigoArticulo
+                    }
+            ).done(function (resultado) {
+        var datosJSON = resultado;
+        if (datosJSON.estado === 200) {
+
+            $.each(datosJSON.datos, function (i, item) {
+                $("#txtcodigo").val(item.codigo_articulo);
+                $("#txtnombre").val(item.nombre);
+                $("#txtprecio").val(item.precio_venta);
+                $("#cbolineamodal").val(item.codigo_linea);
+                $("#cbomarcamodal").val(item.codigo_marca);
+                //Ejecuta el evento change para llenar las categorías que pertenecen a la linea seleccionada
+                $("#cbolineamodal").change();
+                $("#myModal").on("shown.bs.modal", function () {
+                    $("#cbocategoriamodal").val(item.codigo_categoria);
                 });
-                
-            }else{
-                swal("Mensaje del sistema", resultado , "warning");
-            }
-        })
-    
+                $("#txttipooperacion").val("editar");
+            });
+        } else {
+            swal("Mensaje del sistema", resultado, "warning");
+        }
+    })
+
 }
+

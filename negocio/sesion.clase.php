@@ -32,37 +32,71 @@ class Sesion extends Conexion {
         $this->recordarUsuario = $recordarUsuario;
     }
 
-    public function iniciarSesion() {
-        try {
-            $sql = "select p.apellido_paterno,p.apellido_materno,p.nombres,u.clave,u.estado,u.codigo_usuario,c.descripcion as cargo from personal p inner join usuario u on p.dni=u.dni_usuario inner join cargo c on p.codigo_cargo=c.codigo_cargo where p.email=:p_email";
-            $sentencia = $this->dblink->prepare($sql);
-            $sentencia->bindParam(":p_email", $this->getEmail());
-            $sentencia->execute();
-            $resultado = $sentencia->fetch();
+    public function iniciarSesion($tipo) {
+        if ($tipo == 2) {
+            try {
+                $sql = "select p.apellido_paterno,p.apellido_materno,p.nombres,u.clave,u.estado,u.codigo_usuario,c.descripcion as cargo from personal p inner join usuario u on p.dni=u.dni_usuario inner join cargo c on p.codigo_cargo=c.codigo_cargo where p.email=:p_email";
+                $sentencia = $this->dblink->prepare($sql);
+                $sentencia->bindParam(":p_email", $this->getEmail());
+                $sentencia->execute();
+                $resultado = $sentencia->fetch();
 
-            if ($resultado["clave"] == md5($this->getClave())) {
-                if ($resultado["estado"] == "I") {
-                    return 0;
-                } else {
-                    session_name("SitemaComercial1");
-                    session_start();
-
-                    $_SESSION["s_nombre_usuario"] = $resultado["apellido_paterno"] . " " . $resultado["apellido_materno"] . " " . $resultado["nombres"];
-                    $_SESSION["s_cargo_usuario"] = $resultado["cargo"];
-                    $_SESSION["s_codigo_usuario"] = $resultado["codigo_usuario"];
-
-                    if ($this->getRecordarUsuario() == "S") {
-                        setcookie("loginusuario", $this->getEmail(), 0, "/");
+                if ($resultado["clave"] == md5($this->getClave())) {
+                    if ($resultado["estado"] == "I") {
+                        return 0;
                     } else {
-                        setcookie("loginusuario", "", 0, "/");
+                        session_name("SitemaComercial1");
+                        session_start();
+
+                        $_SESSION["s_nombre_usuario"] = $resultado["apellido_paterno"] . " " . $resultado["apellido_materno"] . " " . $resultado["nombres"];
+                        $_SESSION["s_cargo_usuario"] = $resultado["cargo"];
+                        $_SESSION["s_codigo_usuario"] = $resultado["codigo_usuario"];
+
+                        if ($this->getRecordarUsuario() == "S") {
+                            setcookie("loginusuario", $this->getEmail(), 0, "/");
+                        } else {
+                            setcookie("loginusuario", "", 0, "/");
+                        }
+                        return 1;
                     }
-                    return 1;
+                } else {
+                    return 2;
                 }
-            } else {
-                return 2;
+            } catch (Exception $exc) {
+                throw $exc;
             }
-        } catch (Exception $exc) {
-            throw $exc;
+        } else {
+            try {
+                $sql = "select * from cliente where email=:p_email";
+                $sentencia = $this->dblink->prepare($sql);
+                $sentencia->bindParam(":p_email", $this->getEmail());
+                $sentencia->execute();
+                $resultado = $sentencia->fetch();
+
+                if ($resultado["password"] == md5($this->getClave())) {
+                    if ($resultado["estado"] == "I") {
+                        return 0;
+                    } else {
+                        session_name("SitemaComercial1");
+                        session_start();
+
+                        $_SESSION["s_nombre_usuario"] = $resultado["apellido_paterno"] . " " . $resultado["apellido_materno"] . " " . $resultado["nombres"];
+                        $_SESSION["s_cargo_usuario"] = "CLIENTE";
+                        $_SESSION["s_codigo_usuario"] = $resultado["codigo_cliente"];
+
+                        if ($this->getRecordarUsuario() == "S") {
+                            setcookie("loginusuario", $this->getEmail(), 0, "/");
+                        } else {
+                            setcookie("loginusuario", "", 0, "/");
+                        }
+                        return 1;
+                    }
+                } else {
+                    return 2;
+                }
+            } catch (Exception $exc) {
+                throw $exc;
+            }
         }
     }
 
@@ -103,20 +137,24 @@ class Sesion extends Conexion {
       }
      */
 
+    /*
+      <?php
+      $objSesion = new Sesion();
+      echo $objSesion->captcha();
+      ?>
+     */
+
     function captcha() {
         $caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz"; //posibles caracteres a usar
-        $numerodeletras = 4; //numero de letras y numeros para generar el texto
+        $numerodeletras = 10; //numero de letras y numeros para generar el texto
         $cadena = ""; //variable para almacenar la cadena generada
         for ($i = 0; $i < $numerodeletras; $i++) {
             $cadena .= substr($caracteres, rand(0, strlen($caracteres)), 1); /* Extraemos 1 caracter de los caracteres 
               entre el rango 0 a Numero de letras que tiene la cadena */
         }
-
-        setcookie("codigocaptcha", $cadena, time() + 315360000, "/");
         return $cadena;
     }
-    
-    
+
 //    function captcha() {
 //        $caracteres = "1234567890"; //posibles caracteres a usar
 //        $numerodeletras = 1; //numero de letras y numeros para generar el texto
@@ -141,5 +179,4 @@ class Sesion extends Conexion {
 //                                            
 //                                            echo $var1." + ".$var2." + ".$var3;
 //                                           
-
 }

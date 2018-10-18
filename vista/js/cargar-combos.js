@@ -92,3 +92,4 @@ function cargarComboMarca(p_nombreCombo, p_tipo){
 	swal("Error", datosJSON.mensaje , "error");
     });
 }
+

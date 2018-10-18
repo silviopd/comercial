@@ -1,7 +1,10 @@
+
 <!-- Bootstrap 3.3.2 -->
 <link href="../util/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+
 <!-- Font Awesome Icons -->
 <link href="../util/lte/css/font-awesome.css" rel="stylesheet" type="text/css" />
+
 <!-- Theme style -->
 <link href="../util/lte/css/AdminLTE.css" rel="stylesheet" type="text/css" />
 
@@ -21,6 +24,11 @@
 <link rel="stylesheet" href="../util/swa/sweetalert.css">
 <link href="../util/bootstrap/css/dropdown.css" rel="stylesheet" type="text/css" />
 
-
 <!-- Icono para todas las paginas-->
 <link rel="icon" href="../imagenes/logo2.jpg">
+
+<!-- AutoCompletar-->
+<link href="../util/jquery/jquery.ui.css" rel="stylesheet">
+
+<!-- Select2 -->
+<link rel="stylesheet" href="../util/lte/plugins/select2/select2.css">

@@ -1,5 +1,6 @@
 <!-- jQuery 2.1.3 -->
 <script src="../util/jquery/jquery.min.js"></script>
+
 <!-- Bootstrap 3.3.2 JS -->
 <script src="../util/bootstrap/js/bootstrap.js" type="text/javascript"></script>
 
@@ -19,8 +20,11 @@
 <!--sweetalert-->
 <script src="../util/swa/sweetalert-dev.js"></script>
 
+<!-- Select2 -->
+<script src="../util/lte/plugins/select2/select2.js"></script>
+<script src="../util/lte/plugins/select2/select2.full.js"></script>
+
 <script>
     $("html").niceScroll();  // The document page (body)
 </script>
 
-<!--script src="../util/jquery/jquery.ui.autocomplete.js"></script-->

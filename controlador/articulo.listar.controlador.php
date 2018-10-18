@@ -13,8 +13,8 @@ try {
     $codigoCategoria = $_POST["codigoCategoria"];
     $codigoMarca = $_POST["codigoMarca"];
     
-    $objArticulo = new Articulo();
-    $resultado = $objArticulo->listar($codigoLinea, $codigoCategoria, $codigoMarca);
+    $objCliente = new Articulo();
+    $resultado = $objCliente->listar($codigoLinea, $codigoCategoria, $codigoMarca);
     
     Funciones::imprimeJSON(200, "", $resultado);
     
